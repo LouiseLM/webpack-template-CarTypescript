@@ -10,6 +10,29 @@ let GetAllCarsbtn: HTMLButtonElement = <HTMLButtonElement> document.getElementBy
 
 GetAllCarsbtn.addEventListener("click", ShowAllCars)
 
+let AddCarButton: HTMLButtonElement = <HTMLButtonElement> document.getElementById("AddCarBtn")
+
+AddCarButton.addEventListener("click", addCar);
+
+function addCar():void{
+    let addModelElement: HTMLInputElement = <HTMLInputElement> document.getElementById("addModel");
+    let addVendorElement: HTMLInputElement = <HTMLInputElement> document.getElementById("addVendor");
+    let addPriceElement: HTMLInputElement = <HTMLInputElement> document.getElementById("addPrice");
+
+    let myModel : string = addModelElement.value;
+    let myVendor : string = addVendorElement.value;
+    let myPrice : number = +addPriceElement.value;
+
+    axios.post<ICar>("https://webapicar20190326034339.azurewebsites.net/api/cars", 
+                    {model:myModel, vendor:myVendor, price:myPrice})
+                    .then(function(response: AxiosResponse): void{
+                        console.log("Atatuskoden er: " + response.status);
+                    })
+                    .catch(function(error: AxiosError): void{
+                            console.log(error);
+                        })
+}
+
 function ShowAllCars():void{
     axios.get<ICar[]>("https://webapicar20190326034339.azurewebsites.net/api/cars")
     .then(function (response: AxiosResponse<ICar[]>): void
@@ -20,7 +43,7 @@ function ShowAllCars():void{
         let result: string = "<ol>"
 
         response.data.forEach((car: ICar) => {
-            result += "<li>" + car.model + " " + car.vendor + " " + car.id + " koster " + car.price + "kr." +"</li>"
+            result += "<li>" + car.model + " " + car.vendor + " koster " + car.price + "kr." +"</li>"
         });
 
         result += "</ol>"
